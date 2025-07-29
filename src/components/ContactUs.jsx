@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import emailjs from "@emailjs/browser";
+// import toast from "react-hot-toast";
 
 function ContactUs({ contactRef }) {
   const form = useRef(null);
@@ -28,32 +29,59 @@ function ContactUs({ contactRef }) {
   const handleFocus = (field) => setActiveField(field);
   const handleBlur = () => setActiveField(null);
 
-  const sendEmail = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    setFormStatus(null);
-
-    emailjs
-      .sendForm(
-        "service_ur73r7o",
-        "template_hz92rng",
-        form.current,
-        "yPnXcwA8oPcbpAn7f"
-      )
-      .then(
-        (result) => {
-          setFormStatus("success");
-          form.current.reset();
-          setFormData({ name: "", email: "", mobile: "", message: "" });
-          setTimeout(() => setFormStatus(null), 5000);
-        },
-        (error) => {
-          setFormStatus("error");
-          setTimeout(() => setFormStatus(null), 5000);
-        }
-      )
-      .finally(() => setIsSubmitting(false));
+    
+      setIsSubmitting(true);
+      setFormStatus(null);
+  
+    const scriptURL =
+      "https://script.google.com/macros/s/AKfycbzdHFGBPxiDO1P-cvkCt02UH-LZE12V5KHrtcJ1b9RrbB2iP2b4xsX4VJQwTt1coGgL/exec";
+  
+    try {
+      const response = await fetch(scriptURL+`?name=${formData.name}&email=${formData.email}&number=${formData.mobile}&message=${formData.message}`, {
+        method: "GET",
+      });
+      if (response.ok) {
+        setFormStatus("success");
+        setFormData({ name: "", email: "", mobile: "", message: "" });
+      } else {
+        setFormStatus("error");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setFormStatus("error");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
+
+  // const sendEmail = (e) => {
+  //   e.preventDefault();
+  //   setIsSubmitting(true);
+  //   setFormStatus(null);
+
+  //   emailjs
+  //     .sendForm(
+  //       "service_ur73r7o",
+  //       "template_hz92rng",
+  //       form.current,
+  //       "yPnXcwA8oPcbpAn7f"
+  //     )
+  //     .then(
+  //       (result) => {
+  //         setFormStatus("success");
+  //         form.current.reset();
+  //         setFormData({ name: "", email: "", mobile: "", message: "" });
+  //         setTimeout(() => setFormStatus(null), 5000);
+  //       },
+  //       (error) => {
+  //         setFormStatus("error");
+  //         setTimeout(() => setFormStatus(null), 5000);
+  //       }
+  //     )
+  //     .finally(() => setIsSubmitting(false));
+  // };
 
   return (
     <section 
@@ -167,7 +195,7 @@ function ContactUs({ contactRef }) {
               )}
 
               {/* Form */}
-              <form ref={form} onSubmit={sendEmail} className="p-8 pt-4 space-y-6">
+              <form ref={form} onSubmit={handleSubmit} className="p-8 pt-4 space-y-6">
                 {/* Form Fields */}
                 {[
                   { name: 'name', label: 'Full Name', type: 'text', icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z' },
