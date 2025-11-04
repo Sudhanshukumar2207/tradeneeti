@@ -31,8 +31,8 @@ function App() {
 
   return (
     <>
-    <h1 className='flex justify-center items-center mt-40 text-5xl'>This is Under Maintenance</h1>
-      {/* {isLoading ? (
+    {/* <h1 className='flex justify-center items-center mt-40 text-5xl'>This is Under Maintenance</h1> */}
+      {isLoading ? (
         <LoadingScreen />
       ) : (
         <div className="app">
@@ -46,7 +46,7 @@ function App() {
           <Footer />
           {isLocationPopupOpen && <Location closePopup={toggleLocationPopup} />}
         </div>
-      )} */}
+      )}
     </>
   );
 }
